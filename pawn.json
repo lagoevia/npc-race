@@ -1,0 +1,10 @@
+{
+	"user": "lagoevia",
+	"repo": "npc-race",
+	"entry": "test.pwn",
+	"output": "gamemodes/test.amx",
+	"dependencies": [
+		"sampctl/samp-stdlib"
+	],
+	"local": true
+}
