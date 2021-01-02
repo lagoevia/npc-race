@@ -36,3 +36,15 @@ NPCR_LoadCars(const Float:npcPos[3], Float:npcAngle, const Float:playerPos[3], F
     racingPlayerCarLabel = Create3DTextLabel("Your Car", 0x00FF30FF, 0.0, 0.0, 0.0, 10.0, 0);
     Attach3DTextLabelToVehicle(racingPlayerCarLabel, racingPlayerCarID, 0.0, 0.0, 1.2);
 }
+
+NPCR_PlayBotRecording(const recName[] = "race")
+{
+    FCNPC_PutInVehicle(driverBotID, driverBotCarID, 0);
+    FCNPC_StartPlayingPlayback(driverBotID, recName);
+}
+
+public FCNPC_OnFinishPlayback(npcid)
+{
+    SendClientMessageToAll(-1, "Info: Bot recording has finished!");
+    return 1;
+}

@@ -5,7 +5,8 @@
 	"output": "gamemodes/test.amx",
 	"dependencies": [
 		"sampctl/samp-stdlib",
-		"ziggi/FCNPC"
+		"ziggi/FCNPC",
+		"pawn-lang/YSI-Includes@5.x"
 	],
 	"local": true,
 	"runtime": {
@@ -13,7 +14,9 @@
 		"mode": "server",
 		"rcon_password": "password",
 		"port": 7777,
-		"maxnpc": 1,
-		"hostname": "NPC RACE Testing Gamemode"
+		"hostname": "NPC RACE Testing Gamemode",
+		"maxplayers": 50,
+		"language": "",
+		"maxnpc": 1
 	}
 }

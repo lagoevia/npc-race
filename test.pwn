@@ -1,5 +1,10 @@
 #include <a_samp>
 
+#define YSI_NO_HEAP_MALLOC
+#define YSI_NO_CACHE_MESSAGE
+#define YSI_NO_OPTIMISATION_MESSAGE
+#include <YSI_Visual\y_commands>
+
 #include "npc-race"
 
 // Spawn Information
@@ -38,5 +43,11 @@ public OnGameModeInit()
 public OnGameModeExit()
 {
     NPCR_UnloadBot();
+    return 1;
+}
+
+YCMD:botdrive(playerid, params[], help)
+{
+    NPCR_PlayBotRecording();
     return 1;
 }
