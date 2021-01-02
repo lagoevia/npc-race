@@ -36,7 +36,8 @@ main()
 
 public OnGameModeInit()
 {
-    AddPlayerClass(52, PLAYER_SPAWN_X, PLAYER_SPAWN_Y, PLAYER_SPAWN_Z, PLAYER_SPAWN_A, 0, 0, 0, 0, 0, 0);
+    AddPlayerClass(52, 1469.3103, -901.5529, 54.8359, 26.6318, 0, 0, 0, 0, 0, 0);
+    NPCR_SetPlayerSpawn(Float:{ PLAYER_SPAWN_X, PLAYER_SPAWN_Y, PLAYER_SPAWN_Z, PLAYER_SPAWN_A });
     NPCR_LoadBot("[BOT]Driver");
     NPCR_LoadCars();
     return 1;
@@ -45,6 +46,12 @@ public OnGameModeInit()
 public OnGameModeExit()
 {
     NPCR_UnloadBot();
+    return 1;
+}
+
+YCMD:gotorace(playerid, params[], help)
+{
+    NPCR_TeleportToRace(playerid);
     return 1;
 }
 

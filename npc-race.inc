@@ -157,6 +157,12 @@ NPCR_RaceStart(playerid, const recName[] = "race")
     NPCR_CreatePlayerCheckpoint(playerid);
 }
 
+NPCR_TeleportToRace(playerid)
+{
+    SetPlayerPos(playerid, spawnData[SPAWN_DATA_PLAYER][0], spawnData[SPAWN_DATA_PLAYER][1], spawnData[SPAWN_DATA_PLAYER][2]);
+    SetPlayerFacingAngle(playerid, spawnData[SPAWN_DATA_PLAYER][3]);
+}
+
 // Internals
 
 NPCR_PlayBotRecording(const recName[] = "race")
