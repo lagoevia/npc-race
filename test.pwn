@@ -52,3 +52,15 @@ YCMD:botdrive(playerid, params[], help)
     NPCR_CreatePlayerCheckpoint(playerid);
     return 1;
 }
+
+public NPCR_OnPlayerLoseRace(playerid)
+{
+    SendClientMessage(playerid, -1, "Info: You lost the race. Better luck next time!");
+    return 1;
+}
+
+public NPCR_OnPlayerWinRace(playerid)
+{
+    SendClientMessage(playerid, -1, "Info: You won the race, well done!");
+    return 1;
+}

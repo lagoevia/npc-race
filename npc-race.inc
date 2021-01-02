@@ -12,6 +12,13 @@
 #define FINISH_RACE_CP      1
 #define RACE_CP_SIZE        10.0
 
+static enum eRaceStatus
+{
+    e_RACE_STATUS_NONE,
+    e_RACE_STATUS_IN_PROGRESS,
+    e_RACE_STATUS_FINISHED
+};
+
 static
     driverBotID = INVALID_PLAYER_ID,
     driverBotCarID = INVALID_VEHICLE_ID,
@@ -19,7 +26,9 @@ static
     racingPlayerCarID = INVALID_VEHICLE_ID,
     Text3D:driverBotCarLabel,
     Text3D:racingPlayerCarLabel,
-    currentCP = INVALID_RACE_CP
+    currentCP = INVALID_RACE_CP,
+    eRaceStatus:driverBotStatus = e_RACE_STATUS_NONE,
+    eRaceStatus:racingPlayerStatus = e_RACE_STATUS_NONE
     ;
 
 static Float:raceCPs[][] = {
@@ -35,6 +44,10 @@ static Float:raceCPs[][] = {
     {-2705.4150,-289.2620,6.8690},
     {-2774.7522,-289.4026,6.8721}   // Last checkpoint
 };
+
+// Exposed functionality for the end user
+forward NPCR_OnPlayerLoseRace(playerid);
+forward NPCR_OnPlayerWinRace(playerid);
 
 NPCR_LoadBot(const name[], const Float:pos[3], Float:angle)
 {
@@ -61,12 +74,14 @@ NPCR_LoadCars(const Float:npcPos[3], Float:npcAngle, const Float:playerPos[3], F
 
 NPCR_PlayBotRecording(const recName[] = "race")
 {
+    driverBotStatus = e_RACE_STATUS_IN_PROGRESS;
     FCNPC_PutInVehicle(driverBotID, driverBotCarID, 0);
     FCNPC_StartPlayingPlayback(driverBotID, recName);
 }
 
 public FCNPC_OnFinishPlayback(npcid)
 {
+    driverBotStatus = e_RACE_STATUS_FINISHED;
     SendClientMessageToAll(-1, "Info: Bot recording has finished!");
     return 1;
 }
@@ -74,6 +89,7 @@ public FCNPC_OnFinishPlayback(npcid)
 NPCR_CreatePlayerCheckpoint(playerid)
 {
     racingPlayerID = playerid;
+    racingPlayerStatus = e_RACE_STATUS_IN_PROGRESS;
     SetPlayerRaceCheckpoint(racingPlayerID, NORMAL_RACE_CP, raceCPs[0][0], raceCPs[0][1], raceCPs[0][2],
                             raceCPs[1][0], raceCPs[1][1], raceCPs[1][2], RACE_CP_SIZE);
     currentCP = 0;
@@ -104,7 +120,24 @@ public OnPlayerEnterRaceCheckpoint(playerid)
     else
     {
         // Player is on the last checkpoint
+        racingPlayerStatus = e_RACE_STATUS_FINISHED;
         SendClientMessage(playerid, -1, "Info: You've made it all the way to the end, congratulations!");
+
+        if(driverBotStatus == e_RACE_STATUS_FINISHED)
+        {
+            // Bot has already finished, so player lost
+            CallLocalFunction("NPCR_OnPlayerLoseRace", "i", playerid);
+        }
+        else if(driverBotStatus == e_RACE_STATUS_IN_PROGRESS)
+        {
+            // Bot didn't finish yet, so player won
+            CallLocalFunction("NPCR_OnPlayerWinRace", "i", playerid);
+        }
+        else
+        {
+            // Bot is on invalid state - something wrong happened
+            SendClientMessage(playerid, -1, "Warn: Please share with devs - PLAYER FINISHED BOT INVALID");
+        }
         DisablePlayerRaceCheckpoint(playerid);
     }
     return 1;
