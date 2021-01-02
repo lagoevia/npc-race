@@ -6,13 +6,35 @@
 #include <a_samp>
 #include <FCNPC>
 
+#define INVALID_RACE_CP     -1
+#define MAX_RACE_CP         11
+#define NORMAL_RACE_CP      0
+#define FINISH_RACE_CP      1
+#define RACE_CP_SIZE        10.0
+
 static
     driverBotID = INVALID_PLAYER_ID,
     driverBotCarID = INVALID_VEHICLE_ID,
+    racingPlayerID = INVALID_PLAYER_ID,
     racingPlayerCarID = INVALID_VEHICLE_ID,
     Text3D:driverBotCarLabel,
-    Text3D:racingPlayerCarLabel
+    Text3D:racingPlayerCarLabel,
+    currentCP = INVALID_RACE_CP
     ;
+
+static Float:raceCPs[][] = {
+    {-2256.4395,-124.9064,35.0073}, // First checkpoint
+    {-2254.3975,2.7947, 35.0036},
+    {-2298.3350,48.9540,34.9953},
+    {-2430.9812,41.3129,34.8003},
+    {-2594.0413,39.8761,4.0286},
+    {-2706.0566,-3.8357,4.0126},
+    {-2706.5227,-153.6011,4.0111},
+    {-2685.0757,-210.2791,4.0109},
+    {-2662.7595,-242.4410,5.6692},
+    {-2705.4150,-289.2620,6.8690},
+    {-2774.7522,-289.4026,6.8721}   // Last checkpoint
+};
 
 NPCR_LoadBot(const name[], const Float:pos[3], Float:angle)
 {
@@ -46,5 +68,44 @@ NPCR_PlayBotRecording(const recName[] = "race")
 public FCNPC_OnFinishPlayback(npcid)
 {
     SendClientMessageToAll(-1, "Info: Bot recording has finished!");
+    return 1;
+}
+
+NPCR_CreatePlayerCheckpoint(playerid)
+{
+    racingPlayerID = playerid;
+    SetPlayerRaceCheckpoint(racingPlayerID, NORMAL_RACE_CP, raceCPs[0][0], raceCPs[0][1], raceCPs[0][2],
+                            raceCPs[1][0], raceCPs[1][1], raceCPs[1][2], RACE_CP_SIZE);
+    currentCP = 0;
+}
+
+public OnPlayerEnterRaceCheckpoint(playerid)
+{
+    if(currentCP < MAX_RACE_CP - 1)
+    {
+        // Player is not in the last checkpoint
+        if(currentCP == MAX_RACE_CP - 2)
+        {
+            // Player is on the next to last checkpoint
+            SetPlayerRaceCheckpoint(playerid, FINISH_RACE_CP,
+                                    raceCPs[currentCP+1][0], raceCPs[currentCP+1][1], raceCPs[currentCP+1][2],
+                                    0.0, 0.0, 0.0, RACE_CP_SIZE);
+            SendClientMessage(playerid, -1, "Info: You're on the next to last checkpoint. Almost there!");
+        }
+        else
+        {
+            // Player is not on the next to last checkpoint
+            SetPlayerRaceCheckpoint(playerid, NORMAL_RACE_CP,
+                                    raceCPs[currentCP+1][0], raceCPs[currentCP+1][1], raceCPs[currentCP+1][2],
+                                    raceCPs[currentCP+2][0], raceCPs[currentCP+2][1], raceCPs[currentCP+2][2], RACE_CP_SIZE);
+        }
+        currentCP++;
+    }
+    else
+    {
+        // Player is on the last checkpoint
+        SendClientMessage(playerid, -1, "Info: You've made it all the way to the end, congratulations!");
+        DisablePlayerRaceCheckpoint(playerid);
+    }
     return 1;
 }

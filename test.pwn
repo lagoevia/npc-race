@@ -49,5 +49,6 @@ public OnGameModeExit()
 YCMD:botdrive(playerid, params[], help)
 {
     NPCR_PlayBotRecording();
+    NPCR_CreatePlayerCheckpoint(playerid);
     return 1;
 }
