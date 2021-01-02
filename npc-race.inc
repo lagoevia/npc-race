@@ -83,6 +83,19 @@ public FCNPC_OnFinishPlayback(npcid)
 {
     driverBotStatus = e_RACE_STATUS_FINISHED;
     SendClientMessageToAll(-1, "Info: Bot recording has finished!");
+
+    // Already accounted for when player has already finished below; need to cover for in progress and invalid states
+    if(racingPlayerStatus == e_RACE_STATUS_IN_PROGRESS)
+    {
+        // Player didn't finish yet, so bot won
+        CallLocalFunction("NPCR_OnPlayerLoseRace", "i", racingPlayerID);
+    }
+    else
+    {
+        // Player is on invalid state - something wrong happened
+        SendClientMessage(racingPlayerID, -1, "Warn: Please share with devs - BOT FINISHED PLAYER INVALID");
+    }
+
     return 1;
 }
 
