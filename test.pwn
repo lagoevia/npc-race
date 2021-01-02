@@ -5,6 +5,7 @@
 #define YSI_NO_OPTIMISATION_MESSAGE
 #include <YSI_Visual\y_commands>
 
+#define NPCR_USE_DIALOG
 #include "npc-race"
 
 // Spawn Information
@@ -43,6 +44,12 @@ public OnGameModeInit()
 public OnGameModeExit()
 {
     NPCR_UnloadBot();
+    return 1;
+}
+
+YCMD:askrace(playerid, params[], help)
+{
+    NPCR_RaceAsk(playerid);
     return 1;
 }
 

@@ -6,6 +6,10 @@
 #include <a_samp>
 #include <FCNPC>
 
+#if defined NPCR_USE_DIALOG
+    #include <YSI_Visual\y_dialog>
+#endif
+
 #define INVALID_RACE_CP     -1
 #define MAX_RACE_CP         11
 #define NORMAL_RACE_CP      0
@@ -99,6 +103,28 @@ NPCR_SetPlayerSpawn(const Float:playerSpawn[4])
 {
     // No default option for this - if you want the default spawn simply don't call this
     memcpy(_:spawnData[SPAWN_DATA_PLAYER], _:playerSpawn, 0, sizeof(spawnData[]) * 4); // Need to pass bytes, not cells (hence * 4)
+}
+
+NPCR_RaceAsk(playerid, const recName[] = "race")
+{
+    #if !defined NPCR_USE_DIALOG
+        #error "To use NPCR_RaceAsk, you must add the following line before including NPCR: `#define NPCR_USE_DIALOG`."
+    #endif
+    // Add inline dialog here for confirmation
+    inline Confirmation(response, listitem, string:inputtext[])
+    {
+        #pragma unused listitem, inputtext
+        if(response)
+        {
+            SendClientMessage(playerid, -1, "Info: You've accepted the challenge. Get ready!");
+            NPCR_RaceStart(playerid, recName);
+        }
+        else
+        {
+            SendClientMessage(playerid, -1, "Info: You've chosen to stand down from the race.");
+        }
+    }
+    Dialog_ShowCallback(playerid, using inline Confirmation, DIALOG_STYLE_MSGBOX, "Race Challenge", "{FFFFFF}Hi there, beginner. Fancy a ride? I'm feeling generous today.", "Accept", "Refuse");
 }
 
 NPCR_RaceStart(playerid, const recName[] = "race")
