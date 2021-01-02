@@ -6,6 +6,7 @@
 #include <YSI_Visual\y_commands>
 
 #define NPCR_USE_DIALOG
+#define NPCR_USE_COUNTDOWN
 #include "npc-race"
 
 // Spawn Information

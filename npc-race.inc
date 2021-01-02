@@ -10,6 +10,10 @@
     #include <YSI_Visual\y_dialog>
 #endif
 
+#if defined NPCR_USE_COUNTDOWN
+    #include <YSI_Extra\y_inline_timers>
+#endif
+
 #define INVALID_RACE_CP     -1
 #define MAX_RACE_CP         11
 #define NORMAL_RACE_CP      0
@@ -129,6 +133,26 @@ NPCR_RaceAsk(playerid, const recName[] = "race")
 
 NPCR_RaceStart(playerid, const recName[] = "race")
 {
+    #if defined NPCR_USE_COUNTDOWN
+        new seconds = 3;
+        TogglePlayerControllable(playerid, 0);
+        inline Countdown()
+        {
+            new msg[16];
+            if(seconds != 0)
+            {
+                format(msg, _, "%d...", seconds);
+            }
+            else
+            {
+                format(msg, _, "~g~GO~w~!!!");
+                TogglePlayerControllable(playerid, 1);
+            }
+            GameTextForPlayer(playerid, msg, 500, 6);
+            --seconds;
+        }
+        Timer_CreateCallback(using inline Countdown, 0, 1000, 4);
+    #endif
     NPCR_PlayBotRecording(recName);
     NPCR_CreatePlayerCheckpoint(playerid);
 }
