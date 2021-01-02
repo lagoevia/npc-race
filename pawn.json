@@ -4,7 +4,16 @@
 	"entry": "test.pwn",
 	"output": "gamemodes/test.amx",
 	"dependencies": [
-		"sampctl/samp-stdlib"
+		"sampctl/samp-stdlib",
+		"ziggi/FCNPC"
 	],
-	"local": true
+	"local": true,
+	"runtime": {
+		"version": "0.3.7",
+		"mode": "server",
+		"rcon_password": "password",
+		"port": 7777,
+		"maxnpc": 1,
+		"hostname": "NPC RACE Testing Gamemode"
+	}
 }
