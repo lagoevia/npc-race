@@ -215,8 +215,22 @@ public FCNPC_OnFinishPlayback(npcid)
     }
 
     NPCR_RaceCleanup(racingPlayerID, driverBotID);
-    return 1;
+    #if defined NPCR_OnFinishPlayback
+        return FCNPC_OnFinishPlayback(npcid);
+    #else
+        return 1;
+    #endif
 }
+
+#if defined _ALS_FCNPC_OnFinishPlayback
+    #undef FCNPC_OnFinishPlayback
+#else
+    #define _ALS_FCNPC_OnFinishPlayback
+#endif
+#define FCNPC_OnFinishPlayback NPCR_OnFinishPlayback
+#if defined NPCR_OnFinishPlayback
+    forward NPCR_OnFinishPlayback(playerid);
+#endif
 
 public OnPlayerEnterRaceCheckpoint(playerid)
 {
@@ -263,5 +277,19 @@ public OnPlayerEnterRaceCheckpoint(playerid)
         }
         NPCR_RaceCleanup(playerid, driverBotID);
     }
-    return 1;
+    #if defined NPCR_OnPlayerEnterRaceCP
+        return NPCR_OnPlayerEnterRaceCP(playerid);
+    #else
+        return 1;
+    #endif
 }
+
+#if defined _ALS_OnPlayerEnterRaceCP
+    #undef OnPlayerEnterRaceCheckpoint
+#else
+    #define _ALS_OnPlayerEnterRaceCP
+#endif
+#define OnPlayerEnterRaceCheckpoint NPCR_OnPlayerEnterRaceCP
+#if defined NPCR_OnPlayerEnterRaceCP
+    forward NPCR_OnPlayerEnterRaceCP(playerid);
+#endif
