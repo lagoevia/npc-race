@@ -69,7 +69,7 @@ static Float:raceCPs[][] = {
 forward NPCR_OnPlayerLoseRace(playerid);
 forward NPCR_OnPlayerWinRace(playerid);
 
-NPCR_LoadBot(const name[], bool:useCustomSpawn = false, const Float:npcSpawn[4] = {})
+stock NPCR_LoadBot(const name[], bool:useCustomSpawn = false, const Float:npcSpawn[4] = {})
 {
     driverBotID = FCNPC_Create(name);
     if(useCustomSpawn)
@@ -81,13 +81,13 @@ NPCR_LoadBot(const name[], bool:useCustomSpawn = false, const Float:npcSpawn[4] 
     FCNPC_SetAngle(driverBotID, spawnData[SPAWN_DATA_NPC][3]);
 }
 
-NPCR_UnloadBot()
+stock NPCR_UnloadBot()
 {
     FCNPC_Destroy(driverBotID);
     driverBotID = INVALID_PLAYER_ID;
 }
 
-NPCR_LoadCars(bool:useCustomSpawns = false, const Float:npcCarSpawn[4] = {}, const Float:playerCarSpawn[4] = {})
+stock NPCR_LoadCars(bool:useCustomSpawns = false, const Float:npcCarSpawn[4] = {}, const Float:playerCarSpawn[4] = {})
 {
     if(useCustomSpawns)
     {
@@ -103,13 +103,13 @@ NPCR_LoadCars(bool:useCustomSpawns = false, const Float:npcCarSpawn[4] = {}, con
     Attach3DTextLabelToVehicle(racingPlayerCarLabel, racingPlayerCarID, 0.0, 0.0, 1.2);
 }
 
-NPCR_SetPlayerSpawn(const Float:playerSpawn[4])
+stock NPCR_SetPlayerSpawn(const Float:playerSpawn[4])
 {
     // No default option for this - if you want the default spawn simply don't call this
     memcpy(_:spawnData[SPAWN_DATA_PLAYER], _:playerSpawn, 0, sizeof(spawnData[]) * 4); // Need to pass bytes, not cells (hence * 4)
 }
 
-NPCR_RaceAsk(playerid, const recName[] = "race")
+stock NPCR_RaceAsk(playerid, const recName[] = "race")
 {
     #if !defined NPCR_USE_DIALOG
         #error "To use NPCR_RaceAsk, you must add the following line before including NPCR: `#define NPCR_USE_DIALOG`."
@@ -131,7 +131,7 @@ NPCR_RaceAsk(playerid, const recName[] = "race")
     Dialog_ShowCallback(playerid, using inline Confirmation, DIALOG_STYLE_MSGBOX, "Race Challenge", "{FFFFFF}Hi there, beginner. Fancy a ride? I'm feeling generous today.", "Accept", "Refuse");
 }
 
-NPCR_RaceStart(playerid, const recName[] = "race")
+stock NPCR_RaceStart(playerid, const recName[] = "race")
 {
     #if defined NPCR_USE_COUNTDOWN
         new seconds = 3;
@@ -157,7 +157,7 @@ NPCR_RaceStart(playerid, const recName[] = "race")
     NPCR_CreatePlayerCheckpoint(playerid);
 }
 
-NPCR_TeleportToRace(playerid)
+stock NPCR_TeleportToRace(playerid)
 {
     SetPlayerPos(playerid, spawnData[SPAWN_DATA_PLAYER][0], spawnData[SPAWN_DATA_PLAYER][1], spawnData[SPAWN_DATA_PLAYER][2]);
     SetPlayerFacingAngle(playerid, spawnData[SPAWN_DATA_PLAYER][3]);
@@ -165,14 +165,14 @@ NPCR_TeleportToRace(playerid)
 
 // Internals
 
-NPCR_PlayBotRecording(const recName[] = "race")
+stock NPCR_PlayBotRecording(const recName[] = "race")
 {
     driverBotStatus = e_RACE_STATUS_IN_PROGRESS;
     FCNPC_PutInVehicle(driverBotID, driverBotCarID, 0);
     FCNPC_StartPlayingPlayback(driverBotID, recName);
 }
 
-NPCR_CreatePlayerCheckpoint(playerid)
+stock NPCR_CreatePlayerCheckpoint(playerid)
 {
     racingPlayerID = playerid;
     racingPlayerStatus = e_RACE_STATUS_IN_PROGRESS;
@@ -181,7 +181,7 @@ NPCR_CreatePlayerCheckpoint(playerid)
     currentCP = 0;
 }
 
-NPCR_RaceCleanup(playerid, npcid)
+stock NPCR_RaceCleanup(playerid, npcid)
 {
     DisablePlayerRaceCheckpoint(playerid);
     FCNPC_Stop(driverBotID);
