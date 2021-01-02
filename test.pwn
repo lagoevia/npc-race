@@ -35,8 +35,8 @@ main()
 public OnGameModeInit()
 {
     AddPlayerClass(52, PLAYER_SPAWN_X, PLAYER_SPAWN_Y, PLAYER_SPAWN_Z, PLAYER_SPAWN_A, 0, 0, 0, 0, 0, 0);
-    NPCR_LoadBot("[BOT]Driver", Float:{ NPC_SPAWN_X, NPC_SPAWN_Y, NPC_SPAWN_Z }, NPC_SPAWN_A);
-    NPCR_LoadCars(Float:{NPC_VEH_SPAWN_X, NPC_VEH_SPAWN_Y, NPC_VEH_SPAWN_Z}, NPC_VEH_SPAWN_A, Float:{PLAYER_VEH_SPAWN_X, PLAYER_VEH_SPAWN_Y, PLAYER_VEH_SPAWN_Z}, PLAYER_VEH_SPAWN_A);
+    NPCR_LoadBot("[BOT]Driver");
+    NPCR_LoadCars();
     return 1;
 }
 
