@@ -61,7 +61,6 @@ static Float:raceCPs[][] = {
 forward NPCR_OnPlayerLoseRace(playerid);
 forward NPCR_OnPlayerWinRace(playerid);
 
-
 NPCR_LoadBot(const name[], bool:useCustomSpawn = false, const Float:npcSpawn[4] = {})
 {
     driverBotID = FCNPC_Create(name);
@@ -96,32 +95,25 @@ NPCR_LoadCars(bool:useCustomSpawns = false, const Float:npcCarSpawn[4] = {}, con
     Attach3DTextLabelToVehicle(racingPlayerCarLabel, racingPlayerCarID, 0.0, 0.0, 1.2);
 }
 
+NPCR_SetPlayerSpawn(const Float:playerSpawn[4])
+{
+    // No default option for this - if you want the default spawn simply don't call this
+    memcpy(_:spawnData[SPAWN_DATA_PLAYER], _:playerSpawn, 0, sizeof(spawnData[]) * 4); // Need to pass bytes, not cells (hence * 4)
+}
+
+NPCR_RaceStart(playerid, const recName[] = "race")
+{
+    NPCR_PlayBotRecording(recName);
+    NPCR_CreatePlayerCheckpoint(playerid);
+}
+
+// Internals
+
 NPCR_PlayBotRecording(const recName[] = "race")
 {
     driverBotStatus = e_RACE_STATUS_IN_PROGRESS;
     FCNPC_PutInVehicle(driverBotID, driverBotCarID, 0);
     FCNPC_StartPlayingPlayback(driverBotID, recName);
-}
-
-public FCNPC_OnFinishPlayback(npcid)
-{
-    driverBotStatus = e_RACE_STATUS_FINISHED;
-    SendClientMessageToAll(-1, "Info: Bot recording has finished!");
-
-    // Already accounted for when player has already finished below; need to cover for in progress and invalid states
-    if(racingPlayerStatus == e_RACE_STATUS_IN_PROGRESS)
-    {
-        // Player didn't finish yet, so bot won
-        CallLocalFunction("NPCR_OnPlayerLoseRace", "i", racingPlayerID);
-    }
-    else
-    {
-        // Player is on invalid state - something wrong happened
-        SendClientMessage(racingPlayerID, -1, "Warn: Please share with devs - BOT FINISHED PLAYER INVALID");
-    }
-
-    NPCR_RaceCleanup(racingPlayerID, driverBotID);
-    return 1;
 }
 
 NPCR_CreatePlayerCheckpoint(playerid)
@@ -149,10 +141,25 @@ NPCR_RaceCleanup(playerid, npcid)
     currentCP = INVALID_RACE_CP;
 }
 
-NPCR_SetPlayerSpawn(const Float:playerSpawn[4])
+public FCNPC_OnFinishPlayback(npcid)
 {
-    // No default option for this - if you want the default spawn simply don't call this
-    memcpy(_:spawnData[SPAWN_DATA_PLAYER], _:playerSpawn, 0, sizeof(spawnData[]) * 4); // Need to pass bytes, not cells (hence * 4)
+    driverBotStatus = e_RACE_STATUS_FINISHED;
+    SendClientMessageToAll(-1, "Info: Bot recording has finished!");
+
+    // Already accounted for when player has already finished below; need to cover for in progress and invalid states
+    if(racingPlayerStatus == e_RACE_STATUS_IN_PROGRESS)
+    {
+        // Player didn't finish yet, so bot won
+        CallLocalFunction("NPCR_OnPlayerLoseRace", "i", racingPlayerID);
+    }
+    else
+    {
+        // Player is on invalid state - something wrong happened
+        SendClientMessage(racingPlayerID, -1, "Warn: Please share with devs - BOT FINISHED PLAYER INVALID");
+    }
+
+    NPCR_RaceCleanup(racingPlayerID, driverBotID);
+    return 1;
 }
 
 public OnPlayerEnterRaceCheckpoint(playerid)

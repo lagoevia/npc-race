@@ -46,10 +46,9 @@ public OnGameModeExit()
     return 1;
 }
 
-YCMD:botdrive(playerid, params[], help)
+YCMD:startrace(playerid, params[], help)
 {
-    NPCR_PlayBotRecording();
-    NPCR_CreatePlayerCheckpoint(playerid);
+    NPCR_RaceStart(playerid);
     return 1;
 }
 
